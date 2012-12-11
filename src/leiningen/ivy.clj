@@ -15,7 +15,7 @@
   [dependencies-key {:keys [repositories native-path] :as project}
    & {:keys [add-classpath?]}]
   {:pre [(every? vector? (project dependencies-key))]}
-  (let [files (vine/resolve-dependencies-xml project dependencies-key)]
+  (let [files (vine/report-files project dependencies-key)]
     (doseq [file files]
       (if add-classpath?
         (pomegranate/add-classpath file)))
