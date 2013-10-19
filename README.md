@@ -1,22 +1,24 @@
 # lein-ivy
 
-A Leiningen plugin to do many wonderful things.
+A Leiningen plugin to resolve via Ivy.
 
 ## Usage
 
-FIXME: Use this for user-level plugins:
+You first need to install vine locally as it is not yet on clojars.
 
-Put `[lein-ivy "0.1.0-SNAPSHOT"]` into the `:plugins` vector of your
-`:user` profile, or if you are on Leiningen 1.x do `lein plugin install
-lein-ivy 0.1.0-SNAPSHOT`.
+      git clone https://github.com/lrenn/vine.git
+      cd vine
+      lein install
 
-FIXME: Use this for project-level plugins:
+Use this for user-level plugins:
+
+Put `[lein-ivy "0.2.0-SNAPSHOT"]` into the `:plugins` vector of your
+`:user` profile.
+
+Use this for project-level plugins:
 
 Put `[lein-ivy "0.1.0-SNAPSHOT"]` into the `:plugins` vector of your project.clj.
 
-FIXME: and add an example usage that actually makes sense:
-
-    $ lein ivy
 
 ## License
 

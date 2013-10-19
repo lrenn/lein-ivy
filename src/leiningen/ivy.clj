@@ -15,11 +15,13 @@
   [dependencies-key {:keys [repositories native-path] :as project}
    & {:keys [add-classpath?]}]
   {:pre [(every? vector? (project dependencies-key))]}
-  (let [files (vine/report-files project dependencies-key)]
+  (println (str dependencies-key " " add-classpath?))
+  (let [files (vine/resolved-files project dependencies-key)]
     (doseq [file files]
       (if add-classpath?
         (pomegranate/add-classpath file)))
-    (leiningen.core.classpath/extract-native-deps files native-path)
+    ;; They changed extract-native-deps to depend on aether.
+    ; (leiningen.core.classpath/extract-native-deps files native-path)
     (set files)))
 
 (defn resolve-hook [f & args]
