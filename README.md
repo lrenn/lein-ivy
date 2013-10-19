@@ -31,6 +31,11 @@ Use this for project-level plugins:
 
 Put `[lein-ivy "0.1.0-SNAPSHOT"]` into the `:plugins` vector of your project.clj.
 
+
+You may also need to set the hooks.  This is not supposed to be required by leiningen, but when I first worked on this plugin it was.  Add this to your project.clj.
+
+    :hooks [leiningen.ivy]
+
 Now you can see if it work.
 
     lein repl
