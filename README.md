@@ -44,6 +44,6 @@ You should see the familiar Ivy resolution and the repl start with your dependen
 
 ## License
 
-Copyright © 2012 FIXME
+Copyright © 2012, 2013 Luke Renn
 
 Distributed under the Eclipse Public License, the same as Clojure.
