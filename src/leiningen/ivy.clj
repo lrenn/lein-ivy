@@ -2,7 +2,15 @@
   (:require [vine.core :as vine]
             [cemerick.pomegranate :as pomegranate]
             [leiningen.core.classpath]
+            [clojure.pprint :refer [pprint]]
             [robert.hooke]))
+
+(def resolve-report
+  (memoize
+   (fn [project]
+     (-> project
+         vine/ivy-instance
+         (vine/ivy-resolve project)))))
 
 (defn ivy-resolve-dependencies
   "Simply delegate regular dependencies to vine/ivy. This will
@@ -15,17 +23,23 @@
   [dependencies-key {:keys [repositories native-path] :as project}
    & {:keys [add-classpath?]}]
   {:pre [(every? vector? (project dependencies-key))]}
-  (println (str dependencies-key " " add-classpath?))
-  (let [files (vine/resolved-files project dependencies-key)]
+  ;; Remove prep-tasks as it changes and prevents memoization.
+  ;; Looking at the lein source, I'm thinking their memoize isn't
+  ;; catching this.
+  (let [project (dissoc project :prep-tasks)
+        files (vine/report-files (resolve-report project) dependencies-key)]
     (doseq [file files]
       (if add-classpath?
         (pomegranate/add-classpath file)))
     ;; They changed extract-native-deps to depend on aether.
-    ; (leiningen.core.classpath/extract-native-deps files native-path)
+    ;; (leiningen.core.classpath/extract-native-deps files native-path)
     (set files)))
 
+(def ivy-resolve-dependencies-memoized
+  (memoize ivy-resolve-dependencies))
+
 (defn resolve-hook [f & args]
-  (apply ivy-resolve-dependencies args))
+  (apply ivy-resolve-dependencies-memoized args))
 
 (defn hooks []
   (robert.hooke/add-hook #'leiningen.core.classpath/resolve-dependencies
