@@ -2,14 +2,18 @@
   (:require [vine.core :as vine]
             [cemerick.pomegranate :as pomegranate]
             [leiningen.core.classpath]
+            [leiningen.help :refer [help-for subtask-help-for]]
             [clojure.pprint :refer [pprint]]
             [robert.hooke]))
+
+(def ivy-instance
+  (memoize vine/ivy-instance))
 
 (def resolve-report
   (memoize
    (fn [project]
      (-> project
-         vine/ivy-instance
+         ivy-instance
          (vine/ivy-resolve project)))))
 
 (defn ivy-resolve-dependencies
@@ -47,3 +51,26 @@
 
 (defn activate []
   (hooks))
+
+(defn publish
+  "Publish this project to an ivy repository."
+  [project & args]
+  (apply vine/ivy-publish (ivy-instance project) (resolve-report project) args))
+
+(defn- nary? [v n]
+  (some #{n} (map count (:arglists (meta v)))))
+
+(defn ivy
+  "Ivy related tasks."
+  {:help-arglists '([publish])
+   :subtasks [#'publish]}
+  ([project]
+     (println (if (nary? #'help-for 2)
+                (help-for project "ivy")
+                (help-for "ivy"))))
+  ([project subtask & args]
+     (case subtask
+       "publish" (apply publish project args)
+       (println "Subtask" (str \" subtask \") "not found."
+                (subtask-help-for *ns* #'ivy)))))
+
